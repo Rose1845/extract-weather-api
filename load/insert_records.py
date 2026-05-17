@@ -43,6 +43,7 @@ def create_weather_table():
     create_table_query = """
     CREATE TABLE IF NOT EXISTS weather (
         id BIGSERIAL PRIMARY KEY,
+        city
         date TIMESTAMP,
         day_name TEXT,
         status TEXT,

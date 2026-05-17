@@ -74,6 +74,24 @@ services:
     networks:
       - weather-network
 
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: WeatherCluster
+      CASSANDRA_DC: dc1
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+      - ./cassandra/init.cql:/docker-entrypoint-initdb.d/init.cql
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "DESCRIBE KEYSPACES"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+volumes:
+  cassandra_data:
 networks:
   weather-network:
     driver: bridge
