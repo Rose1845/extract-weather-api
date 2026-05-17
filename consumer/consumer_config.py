@@ -31,10 +31,10 @@ def exceute_consumer():
                 insert_weather(session, insert_record_data, record)
                 consumer.commit()
                 log.info(
-                    record["city"],
-                    record["timestamp"],
-                    record["temperature"],
-                    record["description"],
+                    f"{record['city']} | "
+                    f"{record['timestamp']} | "
+                    f"{record['temperature']}°C | "
+                    f"{record['description']}"
                 )
 
             except Exception as e:
@@ -51,3 +51,7 @@ def exceute_consumer():
     finally:
         consumer.close()
         log.info("Consumer closed.")
+
+
+if __name__ == "__main__":
+    exceute_consumer()

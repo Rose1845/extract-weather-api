@@ -43,17 +43,16 @@ def create_weather_table():
     create_table_query = """
     CREATE TABLE IF NOT EXISTS weather (
         id BIGSERIAL PRIMARY KEY,
-        city
-        date TIMESTAMP,
-        day_name TEXT,
-        status TEXT,
+        city        TEXT,
+        country     TEXT,
+        timestamp   TIMESTAMP,
+        temperature FLOAT,
+        feels_like  FLOAT,
+        humidity    INT,
+        pressure    INT,
+        wind_speed  FLOAT,
+        weather     TEXT,
         description TEXT,
-        icon TEXT,
-        temp_day FLOAT,
-        temp_min FLOAT,
-        temp_max FLOAT,
-        temp_night FLOAT,
-        humidity FLOAT
     );
     """
     try:
@@ -71,17 +70,17 @@ connect_to_db()
 create_weather_table()
 
 
-def insert_weather_data(day):
+def insert_weather_data():
     conn = connect_to_db()
     cur = conn.cursor()
     cur.execute("""
-        INSERT INTO weather (date, day_name, status, description, icon,
-                             temp_day, temp_min, temp_max, temp_night, humidity)
+        INSERT INTO weather (city, country, timestamp, temperature, feels_like,
+                             humidity, pressure, wind_speed, weather, description)
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """, (
-        day["date"], day["day_name"], day["status"], day["description"],
-        day["icon"], day["temp_day"], day["temp_min"], day["temp_max"],
-        day["temp_night"], day["humidity"]
+        day["date"], day["day_name"], day["timestamp"], day["temperature"],
+        day["feels_like"], day["humidity"], day["pressure"], day["wind_speed"],
+        day["weather"], day["description"]
     ))
     conn.commit()
     conn.close()

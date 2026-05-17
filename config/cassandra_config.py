@@ -15,6 +15,51 @@ log = logging.getLogger(__name__)
 
 
 def connect_cassandra() -> Session:
+    cluster = Cluster(
+        contact_points=[settings.CASSANDRA_HOST],
+        port=settings.CASSANDRA_PORT,
+        load_balancing_policy=RoundRobinPolicy(),
+    )
+
+    session = cluster.connect()
+
+    session.execute(f"""
+        CREATE KEYSPACE IF NOT EXISTS {settings.CASSANDRA_KEYSPACE}
+        WITH replication = {{
+            'class': 'SimpleStrategy',
+            'replication_factor': 1
+        }}
+    """)
+
+    session.set_keyspace(settings.CASSANDRA_KEYSPACE)
+
+    session.execute(f"""
+        CREATE TABLE IF NOT EXISTS {settings.CASSANDRA_TABLE} (
+            id UUID PRIMARY KEY,
+            city TEXT,
+            country TEXT,
+            timestamp TIMESTAMP,
+            temperature FLOAT,
+            feels_like FLOAT,
+            humidity INT,
+            pressure INT,
+            wind_speed FLOAT,
+            weather TEXT,
+            description TEXT
+        )
+    """)
+
+    log.info(
+        "Connected to Cassandra at %s:%d keyspace=%s",
+        settings.CASSANDRA_HOST,
+        settings.CASSANDRA_PORT,
+        settings.CASSANDRA_KEYSPACE,
+    )
+
+    return session
+
+
+def connect_cassandra1() -> Session:
     """
     Connect to Cassandra and return an active session bound to the keyspace.
     Retries are handled by the driver internally.
