@@ -77,10 +77,6 @@ def insert_weather_data():
         INSERT INTO weather (city, country, timestamp, temperature, feels_like,
                              humidity, pressure, wind_speed, weather, description)
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-    """, (
-        day["date"], day["day_name"], day["timestamp"], day["temperature"],
-        day["feels_like"], day["humidity"], day["pressure"], day["wind_speed"],
-        day["weather"], day["description"]
-    ))
+    """)
     conn.commit()
     conn.close()
